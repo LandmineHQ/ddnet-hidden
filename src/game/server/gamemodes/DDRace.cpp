@@ -285,6 +285,7 @@ void CGameControllerDDRace::HiddenTick(int nowTick, int endTick, int tickSpeed, 
 	};
 	case STEP_S5:
 	{
+		HiddenRemoveHealthPointer(-1);	// 关闭指南针
 		if(nowTick == endTick)
 		{
 			printf(">>> STEP_S5 DONE\n");
