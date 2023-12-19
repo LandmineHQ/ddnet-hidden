@@ -2,7 +2,6 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include "gamecontext.h"
 #include <cstring>
-#include <stdbool.h>
 #include <vector>
 
 #include "teeinfo.h"
