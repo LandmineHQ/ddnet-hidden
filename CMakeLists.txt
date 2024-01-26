@@ -1512,6 +1512,7 @@ set(EXPECTED_DATA
   mapres/winter_mountains.png
   mapres/winter_mountains2.png
   mapres/winter_mountains3.png
+  maps/Crossroads.map
   maps/Forest\ Chasing.map
   maps/Space\ Extinction.map
   maps/license.txt
