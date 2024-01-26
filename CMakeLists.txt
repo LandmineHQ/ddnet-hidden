@@ -1867,6 +1867,7 @@ set_src(ENGINE_INTERFACE GLOB src/engine
   friends.h
   ghost.h
   graphics.h
+  http.h
   input.h
   kernel.h
   keys.h
@@ -2281,8 +2282,11 @@ if(CLIENT)
     editor_object.cpp
     editor_object.h
     editor_props.cpp
+    editor_server_settings.cpp
+    editor_server_settings.h
     editor_trackers.cpp
     editor_trackers.h
+    editor_ui.h
     explanations.cpp
     map_grid.cpp
     map_grid.h

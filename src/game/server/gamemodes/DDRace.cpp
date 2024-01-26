@@ -980,7 +980,7 @@ void CGameControllerDDRace::HiddenTeleportPlayerToCheckPoint(CPlayer *pPlayer, i
 // 传送角色到Pos
 void CGameControllerDDRace::HiddenTeleportPlayerToPosition(CCharacter *pChr, vec2 Pos)
 {
-	pChr->Core()->m_Pos = Pos;
+	pChr->SetPosition(Pos);
 	pChr->m_Pos = Pos;
 	pChr->m_PrevPos = Pos;
 }

@@ -24,6 +24,7 @@
 #include <engine/engine.h>
 #include <engine/favorites.h>
 #include <engine/friends.h>
+#include <engine/http.h>
 #include <engine/storage.h>
 
 class CSortWrap
@@ -94,6 +95,7 @@ void CServerBrowser::SetBaseInfo(class CNetClient *pClient, const char *pNetVers
 	m_pFavorites = Kernel()->RequestInterface<IFavorites>();
 	m_pFriends = Kernel()->RequestInterface<IFriends>();
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
+	m_pHttpClient = Kernel()->RequestInterface<IHttp>();
 	m_pPingCache = CreateServerBrowserPingCache(m_pConsole, m_pStorage);
 
 	RegisterCommands();
@@ -101,7 +103,7 @@ void CServerBrowser::SetBaseInfo(class CNetClient *pClient, const char *pNetVers
 
 void CServerBrowser::OnInit()
 {
-	m_pHttp = CreateServerBrowserHttp(m_pEngine, m_pConsole, m_pStorage, g_Config.m_BrCachedBestServerinfoUrl);
+	m_pHttp = CreateServerBrowserHttp(m_pEngine, m_pConsole, m_pStorage, m_pHttpClient, g_Config.m_BrCachedBestServerinfoUrl);
 }
 
 void CServerBrowser::RegisterCommands()
@@ -1567,8 +1569,8 @@ void CServerBrowser::CommunitiesFilterClean()
 void CServerBrowser::CountriesFilterClean()
 {
 	std::vector<const char *> vpCountryNames;
-	for(const auto &Community : Communities())
-		for(const auto &Country : Community.Countries())
+	for(const CCommunity *pCommunity : SelectedCommunities())
+		for(const auto &Country : pCommunity->Countries())
 			vpCountryNames.push_back(Country.Name());
 	m_CountriesFilter.Clean(vpCountryNames);
 }
@@ -1576,8 +1578,8 @@ void CServerBrowser::CountriesFilterClean()
 void CServerBrowser::TypesFilterClean()
 {
 	std::vector<const char *> vpTypeNames;
-	for(const auto &Community : Communities())
-		for(const auto &Type : Community.Types())
+	for(const CCommunity *pCommunity : SelectedCommunities())
+		for(const auto &Type : pCommunity->Types())
 			vpTypeNames.push_back(Type.Name());
 	m_TypesFilter.Clean(vpTypeNames);
 }

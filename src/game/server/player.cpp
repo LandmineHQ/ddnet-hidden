@@ -780,10 +780,7 @@ void CPlayer::SetTeam(int Team, bool DoChatMsg)
 		}
 	}
 
-	if(!GameServer()->m_pController->IsTeamPlay())
-	{
-		Server()->ExpireServerInfo();
-	}
+	Server()->ExpireServerInfo();
 }
 
 bool CPlayer::SetTimerType(int TimerType)

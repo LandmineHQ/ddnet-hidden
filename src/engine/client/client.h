@@ -76,6 +76,7 @@ class CClient : public IClient, public CDemoPlayer::IListener
 	IStorage *m_pStorage = nullptr;
 	IEngineTextRender *m_pTextRender = nullptr;
 	IUpdater *m_pUpdater = nullptr;
+	CHttp m_Http;
 
 	CNetClient m_aNetClient[NUM_CONNS];
 	CDemoPlayer m_DemoPlayer;
@@ -118,7 +119,6 @@ class CClient : public IClient, public CDemoPlayer::IListener
 	int m_UseTempRconCommands = 0;
 	char m_aPassword[sizeof(g_Config.m_Password)] = "";
 	bool m_SendPassword = false;
-	bool m_ButtonRender = false;
 
 	// version-checking
 	char m_aVersionStr[10] = "0";
@@ -266,6 +266,7 @@ public:
 	IStorage *Storage() { return m_pStorage; }
 	IEngineTextRender *TextRender() { return m_pTextRender; }
 	IUpdater *Updater() { return m_pUpdater; }
+	IHttp *Http() { return &m_Http; }
 
 	CClient();
 
@@ -435,8 +436,7 @@ public:
 	const char *DemoPlayer_Play(const char *pFilename, int StorageType) override;
 	void DemoRecorder_Start(const char *pFilename, bool WithTimestamp, int Recorder, bool Verbose = false) override;
 	void DemoRecorder_HandleAutoStart() override;
-	void DemoRecorder_StartReplayRecorder();
-	void DemoRecorder_Stop(int Recorder, bool RemoveFile = false) override;
+	void DemoRecorder_UpdateReplayRecorder() override;
 	void DemoRecorder_AddDemoMarker(int Recorder);
 	IDemoRecorder *DemoRecorder(int Recorder) override;
 
@@ -460,7 +460,7 @@ public:
 
 	// gfx
 	void SwitchWindowScreen(int Index) override;
-	void SetWindowParams(int FullscreenMode, bool IsBorderless, bool AllowResizing) override;
+	void SetWindowParams(int FullscreenMode, bool IsBorderless) override;
 	void ToggleWindowVSync() override;
 	void Notify(const char *pTitle, const char *pMessage) override;
 	void OnWindowResize() override;

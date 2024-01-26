@@ -90,6 +90,7 @@ MAYBE_UNUSED static const char *FONT_ICON_GEAR = "\xEF\x80\x93";
 MAYBE_UNUSED static const char *FONT_ICON_PEN_TO_SQUARE = "\xEF\x81\x84";
 MAYBE_UNUSED static const char *FONT_ICON_CLAPPERBOARD = "\xEE\x84\xB1";
 MAYBE_UNUSED static const char *FONT_ICON_EARTH_AMERICAS = "\xEF\x95\xBD";
+MAYBE_UNUSED static const char *FONT_ICON_NETWORK_WIRED = "\xEF\x9B\xBF";
 MAYBE_UNUSED static const char *FONT_ICON_LIST_UL = "\xEF\x83\x8A";
 MAYBE_UNUSED static const char *FONT_ICON_INFO = "\xEF\x84\xA9";
 
@@ -144,6 +145,9 @@ MAYBE_UNUSED static const char *FONT_ICON_DICE_SIX = "\xEF\x94\xA6";
 MAYBE_UNUSED static const char *FONT_ICON_LAYER_GROUP = "\xEF\x97\xBD";
 MAYBE_UNUSED static const char *FONT_ICON_UNDO = "\xEF\x8B\xAA";
 MAYBE_UNUSED static const char *FONT_ICON_REDO = "\xEF\x8B\xB9";
+
+MAYBE_UNUSED static const char *FONT_ICON_ARROWS_ROTATE = "\xEF\x80\xA1";
+MAYBE_UNUSED static const char *FONT_ICON_QUESTION = "?";
 } // end namespace FontIcons
 
 enum ETextCursorSelectionMode
