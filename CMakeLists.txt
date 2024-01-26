@@ -1513,6 +1513,7 @@ set(EXPECTED_DATA
   mapres/winter_mountains2.png
   mapres/winter_mountains3.png
   maps/Forest\ Chasing.map
+  maps/Space\ Extinction.map
   maps/license.txt
   maps7/Gold\ Mine.map
   maps7/LearnToPlay.map
