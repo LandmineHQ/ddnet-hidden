@@ -1515,7 +1515,6 @@ set(EXPECTED_DATA
   maps/Crossroads.map
   maps/Forest\ Chasing.map
   maps/Space\ Extinction.map
-  maps/Crossroads.map
   maps/license.txt
   maps7/Gold\ Mine.map
   maps7/LearnToPlay.map
