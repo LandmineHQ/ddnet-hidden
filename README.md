@@ -60,27 +60,127 @@ s5.结算区域是对上局游戏的结算，通常会有一些奖励或惩罚�
 
 - 200-202
   - 200 s1的传送点
-  - 201、202 投票判定点，判定是否开始游戏，但实际上是历史遗留问题，计划跳过或修改该投票内容
+  - 201、202 投票判定点，判定是否开始游戏，但实际上是历史遗留问题，计划跳过或修改投票内容
+  - 相关配置
+
+    ```
+    hidden_step_vote_s1_a "☺☺☺"
+    hidden_step_vote_s1_b "☹☹☹"
+    hidden_step_vote_s1_a_value "开始"
+    hidden_step_vote_s1_b_value "退出"
+    ```
 
 - 210-214
   - 210 s2的传送点
   - 211、212、213、214 投票判定点，判定猎手数量
+  - 相关配置
+
+    ```
+    hidden_step_vote_s2_a "弃权"
+    hidden_step_vote_s2_b "简单"
+    hidden_step_vote_s2_c "普通"
+    hidden_step_vote_s2_d "困难"
+    hidden_step_vote_s2_b_value 1
+    hidden_step_vote_s2_c_value 2
+    hidden_step_vote_s2_d_value 3
+    ```
 
 - 220-224
   - 220 s3的传送点
   - 221、222、223、224 投票判定点，判定设备数量
+  - 相关配置
+
+    ```
+    hidden_step_vote_s3_a "弃权"
+    hidden_step_vote_s3_b "简单"
+    hidden_step_vote_s3_c "普通"
+    hidden_step_vote_s3_d "困难"
+    hidden_step_vote_s3_b_value 30
+    hidden_step_vote_s3_c_value 60
+    hidden_step_vote_s3_d_value 90
+    ```
 
 - 231-232  
   - 231 逃生者传送点
   - 232 猎手传送点
+  - 相关配置
+
+    ```
+    hidden_step_vote_result_conclusion "\n"
+    hidden_step_vote_result_conclusion_seeker_prefix "猎手"
+    hidden_step_vote_result_conclusion_hider_prefix "逃生者"
+    hidden_step_tips_s4_a1 "身份：猎手"
+    hidden_step_tips_s4_a2 "猎手：使用锤子击杀求生者"
+    hidden_step_tips_s4_b1 "身份：逃生者"
+    hidden_step_tips_s4_b2 "逃生者：使用散弹枪激活机器"
+    ```
 
 - 241-242
   - 241 设备重生点
   - 242 设备激活传送点
+  - 相关配置
+
+    ```
+    hidden_step_player_gameover_msg "出局了!"
+    hidden_step_player_gameover_chat_msg "游戏结束后复活"
+    hidden_step_player_gameover_chat_msg_2 "剩余人数"
+    hidden_step_player_waiting_msg "等待加入"
+    hidden_step_player_num_error_msg "人数异常，游戏结束"
+    hidden_step_left_time_to_active_device_msg_prefix "必须有设备在"
+    hidden_step_left_time_to_active_device_msg_suffix "秒内激活"
+    hidden_step_device_activated_progress_msg "设备激活进度："
+    hidden_step_device_compass_activated_whisper_msg "指南针已激活"
+
+    hidden_spectator_seeker_name "猎手"
+    ```
 
 - 251-252
   - 251 胜利玩家传送点
   - 252 失败玩家传送点
+  - 相关配置
+
+    ```
+    hidden_seeker_win ">>> 猎手胜利 <<<"
+    hidden_hider_win ">>> 逃生者胜利 <<<"
+    ```
+
+- 额外配置
+
+  ```
+  # before game start
+  hidden_time_left_start_msg_prefix "游戏将在"
+  hidden_time_left_start_msg_suffix "秒后开始"
+
+  hidden_auto_start_desc "自动开始"
+  hidden_auto_start_cmd "hidden_toggle 1"
+  hidden_auto_start_reason "……"
+  hidden_auto_start_Chatmsg "按下F3同意开始游戏"
+
+  hidden_time_left_msg_prefix "还剩:"
+  hidden_time_left_msg_suffix "秒"
+
+  hidden_not_enough_players_msg_prefix "当前人数:"
+  hidden_not_enough_players_msg_suffix " 至少需要2人才能开始游戏!"
+
+  hidden_duration_s0 60
+  hidden_duration_s1 10
+  hidden_duration_s2 10
+  hidden_duration_s3 10
+  hidden_duration_s4 120
+  hidden_duration_s4_normal 300
+
+  hidden_machine_name "设备"
+  hidden_machine_skin_name "Robot"
+
+  hidden_step_vote_result_msg "投票结果: "
+  hidden_step_vote_result_msg_too_many_seekers "猎人数量过高!"
+
+  # some tips
+  hidden_cant_see_msg "... [您无法查看此消息]"
+  hidden_cant_chat_in_team_msg "你不能进行队伍聊天"
+  hidden_cant_use_dummy_msg "此地图不支持多客户端!"
+  hidden_cant_use_pause_msg "不可切换"
+  ```
 
 由于定点传送会将所有的玩家传送到同一个teleout，请遵守以下制图规范来避免产生BUG：
 
@@ -89,8 +189,15 @@ s5.结算区域是对上局游戏的结算，通常会有一些奖励或惩罚�
 2. 端占用的格子必须以无碰撞开始，恢复碰撞结束
   ![collision](./docs/mapping/collision.png)
 3. 任何效果都必须成对出现，如果你给予了玩家永冻，那么必须在投票的阶段进行恢复。同样，给予了玩家无锤子的buff，那么必须在投票的阶段进行恢复。
-4. 你不必将投票占用的teleout水平放置，你可以随意放置。
+4. 你不必将投票的端占用水平放置，你可以随意放置。
   ![vote_teleout](./docs/mapping/vote_teleout.png)
+5. 端支持在地图中修改默认文本以及默认难度，你可在[端占用](#端占用)中了解到详情
+
+## 配置
+
+默认所有HiddenWorld配置均可通过地图中的server settings进行修改，hidden_skins暂时不可修改。
+配置使用方式如下：
+![server_settings.png](./docs/mapping/server_settings.png)
 
 # Cloning
 
@@ -177,10 +284,12 @@ Whether to test MySQL/MariaDB support in GTest based tests. Default value is OFF
    Note that this requires a running MySQL/MariaDB database on localhost with this setup:
 
 ```
+
 CREATE DATABASE ddnet;
 CREATE USER 'ddnet'@'localhost' IDENTIFIED BY 'thebestpassword';
 GRANT ALL PRIVILEGES ON ddnet.* TO 'ddnet'@'localhost';
 FLUSH PRIVILEGES;
+
 ```
 
 - **-DAUTOUPDATE=[ON|OFF]** <br>
