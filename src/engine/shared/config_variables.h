@@ -761,4 +761,4 @@ MACRO_CONFIG_STR(HiddenHiderWin, hidden_hider_win, 256, ">>> 逃生者胜利 <<<
 MACRO_CONFIG_STR(HiddenCantSeeMSG, hidden_cant_see_msg, 256, "... [您无法查看此消息]", CFGFLAG_SERVER | CFGFLAG_GAME, "游戏中玩家查看旁观玩家消息提示")
 MACRO_CONFIG_STR(HiddenCantChatInTeamMSG, hidden_cant_chat_in_team_msg, 256, "你不能进行队伍聊天", CFGFLAG_SERVER | CFGFLAG_GAME, "拒绝玩家队伍聊天提示")
 MACRO_CONFIG_STR(HiddenCantUseDummyMSG, hidden_cant_use_dummy_msg, 256, "此地图不支持多客户端!", CFGFLAG_SERVER | CFGFLAG_GAME, "拒绝玩家启用分身提示")
-MACRO_CONFIG_STR(HiddenCantUsePauseMSG, hidden_cant_use_pause_msg, 256, "当前不可旁观", CFGFLAG_SERVER | CFGFLAG_GAME, "拒绝玩家旁观提示")
+MACRO_CONFIG_STR(HiddenCantUsePauseMSG, hidden_cant_use_pause_msg, 256, "不可切换", CFGFLAG_SERVER | CFGFLAG_GAME, "拒绝玩家切换旁观提示")
