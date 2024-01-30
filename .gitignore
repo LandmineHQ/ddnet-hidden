@@ -3,7 +3,7 @@
 data/
 !/data/
 
-docs/
+# docs/
 
 bundle/
 !/other/bundle/

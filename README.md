@@ -1,37 +1,116 @@
-[![DDraceNetwork](https://ddnet.org/ddnet-small.png)](https://ddnet.org) [![](https://github.com/ddnet/ddnet/workflows/Build/badge.svg)](https://github.com/ddnet/ddnet/actions?query=workflow%3ABuild+event%3Apush+branch%3Amaster) [![](https://codecov.io/gh/ddnet/ddnet/branch/master/graph/badge.svg)](https://codecov.io/gh/ddnet/ddnet/branch/master)
+# DDNet HiddenWorld [![](https://github.com/ddnet/ddnet/workflows/Build/badge.svg)](https://github.com/ddnet/ddnet/actions?query=workflow%3ABuild+event%3Apush+branch%3Amaster)
 
-Our own flavor of DDRace, a Teeworlds mod. See the [website](https://ddnet.org) for more information.
+My flavor of HiddenWorld, a DDNet mod.
 
-Development discussions happen on #ddnet on Quakenet ([Webchat](http://webchat.quakenet.org/?channels=ddnet&uio=d4)) or on [Discord in the developer channel](https://discord.gg/xsEd9xu).
+For more information please join my tencent group [DDSM] 492827173.
 
-You can get binary releases on the [DDNet website](https://ddnet.org/downloads/), find it on [Steam](https://store.steampowered.com/app/412220/DDraceNetwork/) or [install from repository](#installation-from-repository).
+You can get binary releases on the [Release](https://github.com/landmineHQ/ddnet-hidden/releases).
 
-- [Code Browser](https://ddnet.org/codebrowser/DDNet/)
-- [Source Code Documentation](https://codedoc.ddnet.org/) (very incomplete, only a few items are documented)
+If you want to mapping, please checkout [here](#mapping), you will see the documentation for mapping.
 
-If you want to learn about the source code, you can check the [Development](https://wiki.ddnet.org/wiki/Development) article on the wiki.
+# Mapping
 
-Cloning
--------
+要制作躲猫猫地图，需要了解躲猫猫的**核心机制**，为方便后续描述，这里将服务器(服务端)简称为**端**或**服务**，客服端(玩家)统一称为**玩家**。
+
+为了使HiddenWorld模式给予地图更多自定义的能力，在**端**中并没有为玩家增加武器、特殊状态、冻结解冻等。**端**中仅做的是分配并传送玩家。
+所有的地图规则以及实现都基于DDNet地图实现并且完全兼容DDNet。这意味着你可以使用DDNet的各种机关或特性来制作躲猫猫地图，甚至还能在里面跑图……
+
+相信你已经对HiddenWorld模式有了一定了解，并且已经体验过了***FightFire制作的丛林逐影***、***Wartoz制作的空间消亡***、***画渣制作的十字路口***。
+
+虽然每个地图都有各自的特色与机制，但都将地图大致划分为了五个区域：
+
+- s0.大厅
+- s1-s3.投票
+- ddnet动画
+- s4.大地图
+- s5.结算区域
+
+## s0.大厅
+
+s0.大厅是玩家的出生点，通常会有一些介绍或提示的信息。
+![s0.大厅](./docs/mapping/s0.png)
+
+## s1-s3.投票
+
+s1-s3.投票是玩家进行选择投票的区域，每个区域对应一个投票选项，玩家可以通过进入不同的区域来表达自己的意愿。
+![s1-s3.投票](./docs/mapping/s1-s3.png)
+
+## ddnet动画
+
+ddnet动画是向玩家展示了身份背景的动画，通常会有一些音效或文字来增强氛围。
+![ddnet动画](./docs/mapping/ddnet.png)
+
+## s4.大地图
+
+s4.大地图是玩家的主要活动场所，通常会有一些机关或障碍物来增加游戏的趣味性和挑战性。
+![s4.大地图](./docs/mapping/s4.png)
+
+## s5.结算区域
+
+s5.结算区域是对上局游戏的结算，通常会有一些奖励或惩罚的机制来激励玩家。
+![s5.结算区域](./docs/mapping/s5.png)
+
+<br>
+<br>
+<hr>
+
+为了实现上述功能，不可避免地需要占用地图中的一些信息，端中选择的是占用ddnet地图中的teleout来实现端的传送定位，为了方便描述，将所有被占用的teleout称作"端占用"。
+
+## 端占用
+
+- 200-202
+  - 200 s1的传送点
+  - 201、202 投票判定点，判定是否开始游戏，但实际上是历史遗留问题，计划跳过或修改该投票内容
+
+- 210-214
+  - 210 s2的传送点
+  - 211、212、213、214 投票判定点，判定猎手数量
+
+- 220-224
+  - 220 s3的传送点
+  - 221、222、223、224 投票判定点，判定设备数量
+
+- 231-232  
+  - 231 逃生者传送点
+  - 232 猎手传送点
+
+- 241-242
+  - 241 设备重生点
+  - 242 设备激活传送点
+
+- 251-252
+  - 251 胜利玩家传送点
+  - 252 失败玩家传送点
+
+由于定点传送会将所有的玩家传送到同一个teleout，请遵守以下制图规范来避免产生BUG：
+
+1. 将端占用集成到同一个区域，方便维护与管理
+  ![controller](./docs/mapping/controller.png)
+2. 端占用的格子必须以无碰撞开始，恢复碰撞结束
+  ![collision](./docs/mapping/collision.png)
+3. 任何效果都必须成对出现，如果你给予了玩家永冻，那么必须在投票的阶段进行恢复。同样，给予了玩家无锤子的buff，那么必须在投票的阶段进行恢复。
+4. 你不必将投票占用的teleout水平放置，你可以随意放置。
+  ![vote_teleout](./docs/mapping/vote_teleout.png)
+
+# Cloning
 
 To clone this repository with full history and external libraries (~350 MB):
 
-    git clone --recursive https://github.com/ddnet/ddnet
+    git clone --recursive https://github.com/landmineHQ/ddnet-hidden
 
 To clone this repository with full history when you have the necessary libraries on your system already (~220 MB):
 
-    git clone https://github.com/ddnet/ddnet
+    git clone https://github.com/landmineHQ/ddnet-hidden
 
-To clone this repository with history since we moved the libraries to https://github.com/ddnet/ddnet-libs (~40 MB):
+To clone this repository with history since we moved the libraries to <https://github.com/ddnet/ddnet-libs> (~40 MB):
 
-    git clone --shallow-exclude=included-libs https://github.com/ddnet/ddnet
+    git clone --shallow-exclude=included-libs https://github.com/landmineHQ/ddnet-hidden
 
 To clone the libraries if you have previously cloned DDNet without them, or if you require the ddnet-libs history instead of a shallow clone:
 
     git submodule update --init --recursive
 
-Dependencies on Linux / macOS
------------------------------
+# Dependencies on Linux / macOS
 
 You can install the required libraries on your system, `touch CMakeLists.txt` and CMake will use the system-wide libraries by default. You can install all required dependencies and CMake on Debian or Ubuntu like this:
 
@@ -63,8 +142,7 @@ On macOS you can use [homebrew](https://brew.sh/) to install build dependencies 
 
 If you don't want to use the system libraries, you can pass the `-DPREFER_BUNDLED_LIBS=ON` parameter to cmake.
 
-Building on Linux and macOS
----------------------------
+# Building on Linux and macOS
 
 To compile DDNet yourself, execute the following commands in the source root:
 
@@ -79,21 +157,21 @@ DDNet requires additional libraries, some of which are bundled for the most comm
 
 The following is a non-exhaustive list of build arguments that can be passed to the `cmake` command-line tool in order to enable or disable options in build time:
 
-* **-DCMAKE_BUILD_TYPE=[Release|Debug|RelWithDebInfo|MinSizeRel]** <br>
+- **-DCMAKE_BUILD_TYPE=[Release|Debug|RelWithDebInfo|MinSizeRel]** <br>
 An optional CMake variable for setting the build type. If not set, defaults to "Release" if `-DDEV=ON` is **not** used, and "Debug" if `-DDEV=ON` is used. See `CMAKE_BUILD_TYPE` in CMake Documentation for more information.
 
-* **-DPREFER_BUNDLED_LIBS=[ON|OFF]** <br>
+- **-DPREFER_BUNDLED_LIBS=[ON|OFF]** <br>
 Whether to prefer bundled libraries over system libraries. Setting to ON will make DDNet use third party libraries available in the `ddnet-libs` folder, which is the git-submodule target of the [ddnet-libs](https://github.com/ddnet/ddnet-libs) repository mentioned above -- Useful if you do not have those libraries installed and want to avoid building them. If set to OFF, will only use bundled libraries when system libraries are not found. Default value is OFF.
 
-* **-DWEBSOCKETS=[ON|OFF]** <br>
+- **-DWEBSOCKETS=[ON|OFF]** <br>
 Whether to enable WebSocket support for server. Setting to ON requires the `libwebsockets-dev` library installed. Default value is OFF.
 
-* **-DMYSQL=[ON|OFF]** <br>
+- **-DMYSQL=[ON|OFF]** <br>
 Whether to enable MySQL/MariaDB support for server. Requires at least MySQL 8.0 or MariaDB 10.2. Setting to ON requires the `libmariadbclient-dev` library installed, which are also provided as bundled libraries for the common platforms. Default value is OFF.
 
    Note that the bundled MySQL libraries might not work properly on your system. If you run into connection problems with the MySQL server, for example that it connects as root while you chose another user, make sure to install your system libraries for the MySQL client. Make sure that the CMake configuration summary says that it found MySQL libs that were not bundled (no "using bundled libs").
 
-* **-DTEST_MYSQL=[ON|OFF]** <br>
+- **-DTEST_MYSQL=[ON|OFF]** <br>
 Whether to test MySQL/MariaDB support in GTest based tests. Default value is OFF.
 
    Note that this requires a running MySQL/MariaDB database on localhost with this setup:
@@ -105,55 +183,55 @@ GRANT ALL PRIVILEGES ON ddnet.* TO 'ddnet'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-* **-DAUTOUPDATE=[ON|OFF]** <br>
+- **-DAUTOUPDATE=[ON|OFF]** <br>
 Whether to enable the autoupdater. Packagers may want to disable this for their packages. Default value is ON for Windows and Linux.
 
-* **-DCLIENT=[ON|OFF]** <br>
+- **-DCLIENT=[ON|OFF]** <br>
 Whether to enable client compilation. If set to OFF, DDNet will not depend on Curl, Freetype, Ogg, Opus, Opusfile, and SDL2. Default value is ON.
 
-* **-DVIDEORECORDER=[ON|OFF]** <br>
+- **-DVIDEORECORDER=[ON|OFF]** <br>
 Whether to add video recording support using FFmpeg to the client. Default value is ON.
 
-* **-DDOWNLOAD_GTEST=[ON|OFF]** <br>
+- **-DDOWNLOAD_GTEST=[ON|OFF]** <br>
 Whether to download and compile GTest. Useful if GTest is not installed and, for Linux users, there is no suitable package providing it. Default value is OFF.
 
-* **-DDEV=[ON|OFF]** <br>
+- **-DDEV=[ON|OFF]** <br>
 Whether to optimize for development, speeding up the compilation process a little. If enabled, don't generate stuff necessary for packaging. Setting to ON will set CMAKE\_BUILD\_TYPE to Debug by default. Default value is OFF.
 
-* **-DUPNP=[ON|OFF]** <br>
+- **-DUPNP=[ON|OFF]** <br>
 Whether to enable UPnP support for the server.
 You need to install `libminiupnpc-dev` on Debian, `miniupnpc` on Arch Linux.
 Default value is OFF.
 
-* **-DVULKAN=[ON|OFF]** <br>
+- **-DVULKAN=[ON|OFF]** <br>
 Whether to enable the vulkan backend.
 On Windows you need to install the Vulkan SDK and set the `VULKAN_SDK` environment flag accordingly.
 Default value is ON for Windows x86\_64 and Linux, and OFF for Windows x86 and macOS.
 
-* **-GNinja** <br>
+- **-GNinja** <br>
 Use the Ninja build system instead of Make. This automatically parallelizes the build and is generally faster. Compile with `ninja` instead of `make`. Install Ninja with `sudo apt install ninja-build` on Debian, `sudo pacman -S --needed ninja` on Arch Linux.
 
-* **-DCMAKE_CXX_LINK_FLAGS=[FLAGS]** <br>
+- **-DCMAKE_CXX_LINK_FLAGS=[FLAGS]** <br>
 Custom flags to set for compiler when linking.
 
-* **-DEXCEPTION_HANDLING=[ON|OFF]** <br>
+- **-DEXCEPTION_HANDLING=[ON|OFF]** <br>
 Enable exception handling (only works with Windows as of now, uses DrMingw there). Default value is OFF.
 
-* **-DIPO=[ON|OFF]** <br>
+- **-DIPO=[ON|OFF]** <br>
 Enable interprocedural optimizations, also known as Link Time Optimization (LTO). Default value is OFF.
 
-* **-DFUSE_LD=[OFF|LINKER]** <br>
+- **-DFUSE_LD=[OFF|LINKER]** <br>
 Linker to use. Default value is OFF to try mold, lld, gold.
 
-* **-DSECURITY_COMPILER_FLAGS=[ON|OFF]** <br>
+- **-DSECURITY_COMPILER_FLAGS=[ON|OFF]** <br>
 Whether to set security-relevant compiler flags like `-D_FORTIFY_SOURCE=2` and `-fstack-protector-all`. Default Value is ON.
 
-Running tests (Debian/Ubuntu)
------------------------------
+# Running tests (Debian/Ubuntu)
 
 In order to run the tests, you need to install the following library `libgtest-dev`.
 
 This library isn't compiled, so you have to do it:
+
 ```bash
 sudo apt install libgtest-dev
 cd /usr/src/gtest
@@ -167,26 +245,30 @@ sudo cp lib/*.a /usr/lib
 To run the tests you must target `run_tests` with make:
 `make run_tests`
 
-Code formatting
----------------
+# Code formatting
+
 We use clang-format 10 to format the C++ code of this project. Execute `scripts/fix_style.py` after changing the code to ensure code is formatted properly, a GitHub central style checker will do the same and prevent your change from being submitted.
 
 On Arch Linux you can install clang-format 10 using the [clang-format-static-bin AUR package](https://aur.archlinux.org/packages/clang-format-static-bin/). On macOS you can install clang-format 10 using a [homebrew tap](https://github.com/r-lib/homebrew-taps):
+
 ```bash
 brew install r-lib/taps/clang-format@10
 sudo ln -s /opt/homebrew/Cellar/clang-format@10/10.0.1/bin/clang-format /opt/homebrew/bin/clang-format-10
 ```
 
-Using AddressSanitizer + UndefinedBehaviourSanitizer or Valgrind's Memcheck
----------------------------------------------------------------------------
+# Using AddressSanitizer + UndefinedBehaviourSanitizer or Valgrind's Memcheck
+
 ASan+UBSan and Memcheck are useful to find code problems more easily. Please use them to test your changes if you can.
 
 For ASan+UBSan compile with:
+
 ```bash
 CC=clang CXX=clang++ CXXFLAGS="-fsanitize=address,undefined -fsanitize-recover=address,undefined -fno-omit-frame-pointer" CFLAGS="-fsanitize=address,undefined -fsanitize-recover=address,undefined -fno-omit-frame-pointer" cmake -DCMAKE_BUILD_TYPE=Debug .
 make
 ```
+
 and run with:
+
 ```bash
 UBSAN_OPTIONS=suppressions=./ubsan.supp:log_path=./SAN:print_stacktrace=1:halt_on_errors=0 ASAN_OPTIONS=log_path=./SAN:print_stacktrace=1:check_initialization_order=1:detect_leaks=1:halt_on_errors=0 LSAN_OPTIONS=suppressions=./lsan.supp ./DDNet
 ```
@@ -196,15 +278,13 @@ Check the SAN.\* files afterwards. This finds more problems than memcheck, runs 
 For valgrind's memcheck compile a normal Debug build and run with: `valgrind --tool=memcheck ./DDNet`
 Expect a large slow down.
 
-Building on Windows with Visual Studio
---------------------------------------
+# Building on Windows with Visual Studio
 
 Download and install some version of [Microsoft Visual Studio](https://www.visualstudio.com/) (as of writing, MSVS Community 2017) with **C++ support**, install [Python 3](https://www.python.org/downloads/) **for all users** and install [CMake](https://cmake.org/download/#latest). You also need to install [Rust](https://rustup.rs/).
 
 Start CMake and select the source code folder (where DDNet resides, the directory with `CMakeLists.txt`). Additionally select a build folder, e.g. create a build subdirectory in the source code directory. Click "Configure" and select the Visual Studio generator (it should be pre-selected, so pressing "Finish" will suffice). After configuration finishes and the "Generate" reactivates, click it. When that finishes, click "Open Project". Visual Studio should open. You can compile the DDNet client by right-clicking the "game-client" project and select "Set as Startup project". Now you should be able to compile DDNet by clicking the green, triangular "Run" button.
 
-Cross-compiling on Linux to Windows x86/x86\_64
------------------------------------------------
+# Cross-compiling on Linux to Windows x86/x86\_64
 
 Install MinGW cross-compilers of the form `i686-w64-mingw32-gcc` (32 bit) or
 `x86_64-w64-mingw32-gcc` (64 bit). This is probably the hard part. ;)
@@ -212,8 +292,7 @@ Install MinGW cross-compilers of the form `i686-w64-mingw32-gcc` (32 bit) or
 Then add `-DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/mingw64.toolchain` to the
 **initial** CMake command line.
 
-Cross-compiling on Linux to WebAssembly via Emscripten
---------------------------------------------------------
+# Cross-compiling on Linux to WebAssembly via Emscripten
 
 Install Emscripten cross-compilers (e.g. `sudo apt install emscripten`) on a modern linux distro.
 
@@ -234,6 +313,7 @@ To test the compiled code locally, just use `emrun --browser firefox DDNet.html`
 To host the compiled .html file copy all `.data`, `.html`, `.js`, `.wasm` files to the web server. (see /other/emscripten/minimal.html for a minimal html example)
 
 Then enable cross origin policies. Example for apache2 on debian based distros:
+
 ```bash
 sudo a2enmod header
 
@@ -250,8 +330,7 @@ Header add Cross-Origin-Opener-Policy "same-origin"
 sudo service apache2 restart
 ```
 
-Cross-compiling on Linux to macOS
----------------------------------
+# Cross-compiling on Linux to macOS
 
 Install [osxcross](https://github.com/tpoechtrager/osxcross), then add
 `-DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/darwin.toolchain` and
@@ -264,8 +343,7 @@ from
 [diskdev\_cmds](http://pkgs.fedoraproject.org/repo/pkgs/hfsplus-tools/diskdev_cmds-540.1.linux3.tar.gz/0435afc389b919027b69616ad1b05709/diskdev_cmds-540.1.linux3.tar.gz)
 to unlock the `package_dmg` target that outputs a macOS disk image.
 
-Importing the official DDNet Database
--------------------------------------
+# Importing the official DDNet Database
 
 ```bash
 $ wget https://ddnet.org/stats/ddnet-sql.zip
@@ -295,63 +373,28 @@ $ ./DDNet-Server -f mine.cfg
     <img src="https://repology.org/badge/vertical-allrepos/ddnet.svg?header=" alt="Packaging status" align="right">
 </a>
 
-Installation from Repository
-----------------------------
-
-Debian/Ubuntu
-
-```bash
-$ apt-get install ddnet
-
-```
-
-MacOS
-
-```bash
-$ brew install --cask ddnet
-```
-
-Fedora
-
-```bash
-$ dnf install ddnet
-```
-
-Arch Linux
-
-```bash
-$ yay -S ddnet
-```
-
-FreeBSD
-
-```bash
-$ pkg install DDNet
-```
-
-Benchmarking
-------------
+# Benchmarking
 
 DDNet is available in the [Phoronix Test Suite](https://openbenchmarking.org/test/pts/ddnet). If you have PTS installed you can easily benchmark DDNet on your own system like this:
 
 ```bash
-$ phoronix-test-suite benchmark ddnet
+phoronix-test-suite benchmark ddnet
 ```
 
-Better Git Blame
-----------------
+# Better Git Blame
 
 First, use a better tool than `git blame` itself, e.g. [`tig`](https://jonas.github.io/tig/). There's probably a good UI for Windows, too. Alternatively, use the GitHub UI, click "Blame" in any file view.
 
 For `tig`, use `tig blame path/to/file.cpp` to open the blame view, you can navigate with arrow keys or kj, press comma to go to the previous revision of the current line, q to quit.
 
 Only then you could also set up git to ignore specific formatting revisions:
+
 ```bash
 git config blame.ignoreRevsFile formatting-revs.txt
 ```
 
-(Neo)Vim Syntax Highlighting for config files
-----------------------------------------
+# (Neo)Vim Syntax Highlighting for config files
+
 Copy the file detection and syntax files to your vim config folder:
 
 ```bash
