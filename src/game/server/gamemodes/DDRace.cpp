@@ -794,6 +794,7 @@ void CGameControllerDDRace::HiddenStepUpdate(int toStep)
 				continue;
 			// 取消旁观
 			pPlayer->Pause(CPlayer::PAUSE_NONE, true);
+			pPlayer->m_Hidden.m_isFirstEnterGame = false; // 不是第一次进入游戏
 			pController->HiddenTeleportPlayerToCheckPoint(pPlayer, 210);
 		}
 		// 传送假人当配置提示

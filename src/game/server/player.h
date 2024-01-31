@@ -106,6 +106,8 @@ public:
 		bool m_IsWin = false;
 		// 该玩家失败
 		bool m_IsLose = false;
+		// 首次进入游戏
+		bool m_isFirstEnterGame = true;
 
 		// 设备、假人、机器属性
 
@@ -127,6 +129,7 @@ public:
 		m_Hidden.m_HasBeenKilled = false;
 		m_Hidden.m_IsWin = false;
 		m_Hidden.m_IsLose = false;
+		// bool m_isFirstEnterGame = false;
 	}
 
 	// used for snapping to just update latency if the scoreboard is active

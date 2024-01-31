@@ -329,6 +329,7 @@ void CPlayer::Snap(int SnappingClient)
 	bool isNotBeenKilled = this->m_Hidden.m_HasBeenKilled == false;
 	bool isNotMachine = this->m_Hidden.m_IsDummyMachine == false;
 	bool isSeeker = this->m_Hidden.m_IsSeeker;
+	bool isShowPlayerSkin = true; // 是否显示玩家自己的皮肤，如果为否则端指定皮肤
 
 	char aName[256];
 	char aSkin[256];
@@ -351,8 +352,7 @@ void CPlayer::Snap(int SnappingClient)
 			{ // 正常显示
 				str_copy(aName, Server()->ClientName(m_ClientID));
 			}
-			// 指定皮肤
-			str_copy(aSkin, GameServer()->m_Hidden.aSkins[id].c_str(), sizeof(aSkin));
+			isShowPlayerSkin = false;
 		}
 		else
 		{
@@ -404,6 +404,14 @@ void CPlayer::Snap(int SnappingClient)
 		// 皮肤
 		str_copy(aSkin, "giftee_red");
 	}
+	else if(isHiddenModeCanTurnOn && !m_Hidden.m_isFirstEnterGame)
+	{
+		isShowPlayerSkin = false;
+	}
+
+	if(isShowPlayerSkin == false)
+		// 指定皮肤
+		str_copy(aSkin, GameServer()->m_Hidden.aSkins[id].c_str(), sizeof(aSkin));
 
 	StrToInts(&pClientInfo->m_Name0, 4, aName); // 名字
 	StrToInts(&pClientInfo->m_Skin0, 6, aSkin); // 皮肤
