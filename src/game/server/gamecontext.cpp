@@ -1765,35 +1765,36 @@ void CGameContext::OnClientConnected(int ClientID, void *pData)
 
 	Server()->ExpireServerInfo();
 
-	{ // hidden mode
-		CGameControllerDDRace *pController = (CGameControllerDDRace *)m_pController;
-		CServer *pServer = (CServer *)m_pServer;
-		if(pController->HiddenModeCanTurnOn())
-		{ // 如果地图可以启用hidden mode则禁止相同IP连接
-			char pClientIP[NETADDR_MAXSTRSIZE] = {0}, pIP[NETADDR_MAXSTRSIZE] = "unknown type 0";
-			net_addr_str(pServer->m_NetServer.ClientAddr(ClientID), pClientIP, NETADDR_MAXSTRSIZE, false);
-			if(str_comp(pClientIP, pIP) != 0) // 假人不作处理
-				for(int i = 0; i < MAX_CLIENTS; i++)
-				{
-					if(!m_apPlayers[i])
-						continue; // 空玩家
+	// hidden mode
+	CGameControllerDDRace *pController = (CGameControllerDDRace *)m_pController;
+	CServer *pServer = (CServer *)m_pServer;
+	if(pController->m_HiddenModeCanTurnOn)
+	{ // 如果地图可以启用hidden mode则禁止相同IP连接
+		char pClientIP[NETADDR_MAXSTRSIZE] = {0}, pIP[NETADDR_MAXSTRSIZE] = "unknown type 0";
+		net_addr_str(pServer->m_NetServer.ClientAddr(ClientID), pClientIP, NETADDR_MAXSTRSIZE, false);
+		if(str_comp(pClientIP, pIP) == 0) // 假人不作处理
+			return;
+		for(int i = 0; i < MAX_CLIENTS; i++)
+		{
+			if(!m_apPlayers[i])
+				continue; // 空玩家
 
-					pServer->GetClientAddr(i, pIP, NETADDR_MAXSTRSIZE);
+			pServer->GetClientAddr(i, pIP, NETADDR_MAXSTRSIZE);
 
-					if(str_comp(pClientIP, pIP) == 0)
-					{ // 相同IP
-						// 是否允许连接
-						bool isAllowConnect =
-							pServer->GetAuthedState(i) > AUTHED_NO; // 管理员
+			if(str_comp(pClientIP, pIP) != 0)
+				continue; // IP不同
 
-						if(!isAllowConnect) // 不允许连接
-						{
-							WhisperID(0, ClientID, Config()->m_HiddenCantUseDummyMSG);
-							pServer->m_NetServer.Drop(i, Config()->m_HiddenCantUseDummyMSG);
-						}
-						break;
-					}
-				}
+			// 相同IP
+			// 是否允许连接
+			bool isAllowConnect =
+				pServer->GetAuthedState(i) > AUTHED_NO; // 管理员
+
+			if(!isAllowConnect) // 不允许连接
+			{
+				WhisperID(0, ClientID, Config()->m_HiddenCantUseDummyMSG);
+				pServer->m_NetServer.Drop(i, Config()->m_HiddenCantUseDummyMSG);
+			}
+			break;
 		}
 	}
 }
@@ -3525,8 +3526,8 @@ void CGameContext::ConVote(IConsole::IResult *pResult, void *pUserData)
 		pSelf->ForceVote(pResult->m_ClientID, false);
 }
 
-// ConHammerToggle 锤子效果切换
-void CGameContext::ConHammerToggle(IConsole::IResult *pResult, void *pUserData)
+// ConHiddenHammerToggle 锤子效果切换
+void CGameContext::ConHiddenHammerToggle(IConsole::IResult *pResult, void *pUserData)
 {
 	char aBuf[256];
 
@@ -3615,6 +3616,38 @@ void CGameContext::ConHiddenToggle(IConsole::IResult *pResult, void *pUserData)
 	pSelf->SendBroadcast(aBuf, -1, true);
 }
 
+void CGameContext::ConHiddenSpawnDummies(IConsole::IResult *pResult, void *pUserData)
+{
+	CGameContext *pSelf = (CGameContext *)pUserData;
+	int dummiesCount = pResult->NumArguments() > 0 ? pResult->GetInteger(0) : 5;
+	if(dummiesCount < 1)
+		dummiesCount = 5;
+
+	// 生成dummies
+	for(int id = 0; id < MAX_CLIENTS; id++)
+	{
+		CPlayer *pPlayer = pSelf->m_apPlayers[id];
+		if(pPlayer)
+			continue;
+
+		CServer *pServer = (CServer *)pSelf->Server();
+		str_copy(pServer->m_aClients[id].m_aName, "dummy");
+		pServer->m_aClients[id].m_State = CServer::CClient::STATE_INGAME;
+		pSelf->OnClientConnected(id, nullptr);
+
+		pPlayer = pSelf->m_apPlayers[id];
+		str_copy(pPlayer->m_TeeInfos.m_aSkinName, pSelf->Config()->m_HiddenMachineSkinName);
+		pPlayer->m_TeeInfos.m_UseCustomColor = 0;
+		pPlayer->SetAfk(false);
+
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "dummies created");
+
+		dummiesCount--;
+		if(dummiesCount <= 0)
+			break;
+	}
+}
+
 /*
 	关闭Hidden Mode
  */
@@ -3652,7 +3685,7 @@ void CGameContext::HiddenModeStart()
 		CConsole::CResult *pResult = new CConsole::CResult();
 		pResult->AddArgument("1");
 		void *pUserData = (void *)this;
-		ConHammerToggle(pResult, pUserData);
+		ConHiddenHammerToggle(pResult, pUserData);
 	}
 	for(CPlayer *pPlayer : m_apPlayers)
 	{
@@ -3779,10 +3812,11 @@ void CGameContext::OnConsoleInit()
 	m_pEngine = Kernel()->RequestInterface<IEngine>();
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
 
-	Console()->Register("hidden_hammer_toggle", "i[value]", CFGFLAG_SERVER, ConHammerToggle, this, "Toggle hammer mode between normal and kill");
-	Console()->Register("hidden_test1", "", CFGFLAG_SERVER, ConHiddenTest1, this, "Spawn machine on the specified checkpoint");
-	Console()->Register("hidden_test2", "", CFGFLAG_SERVER, ConHiddenTest2, this, "Spawn machine on the specified checkpoint");
+	Console()->Register("hidden_hammer_toggle", "i[value]", CFGFLAG_SERVER, ConHiddenHammerToggle, this, "Toggle hammer mode between normal and kill");
+	Console()->Register("hidden_test1", "", CFGFLAG_SERVER, ConHiddenTest1, this, "测试命令1");
+	Console()->Register("hidden_test2", "", CFGFLAG_SERVER, ConHiddenTest2, this, "测试命令2");
 	Console()->Register("hidden_toggle", "i[value]", CFGFLAG_SERVER, ConHiddenToggle, this, "Toggle hidden mode");
+	Console()->Register("hidden_spawn_dummies", "i[value]", CFGFLAG_SERVER, ConHiddenSpawnDummies, this, "召唤分身");
 	Console()->Register("hidden_tp", "?i[clientID/checkpoint] ?i[checkpoint]", CFGFLAG_SERVER, ConHiddenTeleportPlayerToCheckPoint, this, "Teleport player or self to check point or view postion");
 
 	Console()->Register("tune", "s[tuning] ?f[value]", CFGFLAG_SERVER | CFGFLAG_GAME, ConTuneParam, this, "Tune variable to value or show current value");
@@ -4071,7 +4105,7 @@ void CGameContext::OnInit(const void *pPersistentData)
 	printf("假人生成完毕\n");
 
 	// 地图是否支持Hidden Mode
-	if(pController->HiddenModeCanTurnOn())
+	if(pController->m_HiddenModeCanTurnOn)
 	{
 		// 启用Kill Hammer
 		pController->m_KillHammer = true;

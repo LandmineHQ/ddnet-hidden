@@ -184,7 +184,9 @@ public:
 	static void ConHiddenTeleportPlayerToCheckPoint(IConsole::IResult *pResult, void *pUserData);
 	static void ConHiddenTest1(IConsole::IResult *pResult, void *pUserData);
 	static void ConHiddenTest2(IConsole::IResult *pResult, void *pUserData);
-	static void ConHammerToggle(IConsole::IResult *pResult, void *pUserData);
+	static void ConHiddenHammerToggle(IConsole::IResult *pResult, void *pUserData);
+	// 召唤分身
+	static void ConHiddenSpawnDummies(IConsole::IResult *pResult, void *pUserData);
 	void HiddenModeStop();
 	void HiddenModeStart();
 
