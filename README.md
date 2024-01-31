@@ -131,7 +131,7 @@ s5.结算区域是对上局游戏的结算，通常会有一些奖励或惩罚�
     hidden_step_device_activated_progress_msg "设备激活进度："
     hidden_step_device_compass_activated_whisper_msg "指南针已激活"
 
-    hidden_spectator_seeker_name "猎手"
+    hidden_spectator_seeker_name ">>> 猎手 <<<"
     ```
 
 - 251-252

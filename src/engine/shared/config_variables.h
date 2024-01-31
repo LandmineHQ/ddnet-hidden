@@ -753,7 +753,7 @@ MACRO_CONFIG_STR(HiddenStepLeftTimeToActiveDeviceMSGSuffix, hidden_step_left_tim
 MACRO_CONFIG_STR(HiddenStepDeviceActivatedProgressMSG, hidden_step_device_activated_progress_msg, 256, "设备激活进度:", CFGFLAG_SERVER | CFGFLAG_GAME, "设备激活进度")
 MACRO_CONFIG_STR(HiddenStepDeviceCompassActivatedWhisperMSG, hidden_step_device_compass_activated_whisper_msg, 256, "指南针已激活", CFGFLAG_SERVER | CFGFLAG_GAME, "指南针激活时DEVICE私聊内容")
 
-MACRO_CONFIG_STR(HiddenSpectatorSeekerName, hidden_spectator_seeker_name, 256, "猎手", CFGFLAG_SERVER | CFGFLAG_GAME, "旁观玩家显示猎手的名字")
+MACRO_CONFIG_STR(HiddenSpectatorSeekerName, hidden_spectator_seeker_name, 256, ">>> 猎手 <<<", CFGFLAG_SERVER | CFGFLAG_GAME, "旁观玩家显示猎手的名字")
 
 MACRO_CONFIG_STR(HiddenSeekerWin, hidden_seeker_win, 256, ">>> 猎手胜利 <<<", CFGFLAG_SERVER | CFGFLAG_GAME, "猎人胜利提示")
 MACRO_CONFIG_STR(HiddenHiderWin, hidden_hider_win, 256, ">>> 逃生者胜利 <<<", CFGFLAG_SERVER | CFGFLAG_GAME, "求生者胜利提示")

@@ -345,7 +345,7 @@ void CPlayer::Snap(int SnappingClient)
 			// 名字
 			if(isSeeker && pPlayerSnapTo->GetTeam() == TEAM_SPECTATORS)
 			{ // 旁观者显示谁是猎人
-				str_format(aName, sizeof(aName), ">>>%s<<<", GameServer()->Config()->m_HiddenSpectatorSeekerName);
+				str_format(aName, sizeof(aName), "%s", GameServer()->Config()->m_HiddenSpectatorSeekerName);
 				str_copy(aClan, Server()->ClientName(m_ClientID));
 			}
 			else
