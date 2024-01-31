@@ -33,6 +33,8 @@ CGameControllerDDRace::CGameControllerDDRace(class CGameContext *pGameServer) :
 	{
 		m_HiddenModeCanTurnOn = true;
 		m_pGameType = g_Config.m_SvTestingCommands ? HIDDEN_TEST_TYPE_NAME : HIDDEN_TYPE_NAME;
+		// 躲猫猫地图没有弱钩子
+		g_Config.m_SvNoWeakHook = 1;
 	}
 	srand((unsigned)time(NULL)); // 用当前时间作为种子
 	for(auto &pHealth : m_Hidden.a_pHealthPointerList)
@@ -771,6 +773,8 @@ void CGameControllerDDRace::HiddenStepUpdate(int toStep)
 			iPlayerNum++;
 			// 分数重置
 			pPlayer->m_Score = 0;
+			// 状态重置
+			pPlayer->HiddenDDNetStateReset();
 		}
 		m_Hidden.nowStep = STEP_S1;
 		m_Hidden.stepDurationTime = GameServer()->Config()->m_HiddenStepDurationS1;

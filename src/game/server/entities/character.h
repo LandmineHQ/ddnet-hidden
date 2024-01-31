@@ -259,6 +259,35 @@ public:
 	bool IsSuper() { return m_Core.m_Super; }
 
 	CSaveTee &GetRescueTeeRef() { return m_RescueTee; }
+
+	// hidden mode
+	// 清除禁用buff
+	void HiddenClearDisabledBuffs()
+	{
+		ResetHook();
+		ResetInput();
+		ResetPickups();
+		ResetVelocity();
+		SetDeepFrozen(false);
+		SetLiveFrozen(false);
+		UnFreeze();
+		SetEndlessHook(false);
+
+		m_Core.m_ShotgunHitDisabled = false;
+		m_Core.m_GrenadeHitDisabled = false;
+		m_Core.m_HammerHitDisabled = false;
+		m_Core.m_LaserHitDisabled = false;
+		m_Core.m_CollisionDisabled = false;
+		m_Core.m_HookHitDisabled = false;
+		m_Core.m_EndlessJump = false;
+		m_Core.m_Jetpack = false;
+		m_LastRefillJumps = false;
+		m_Core.m_HasTelegunGun = false;
+		m_Core.m_HasTelegunGrenade = false;
+		m_Core.m_HasTelegunLaser = false;
+
+		SetSolo(false);
+	};
 };
 
 enum

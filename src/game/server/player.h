@@ -8,7 +8,9 @@
 #include <engine/shared/protocol.h>
 
 #include <game/alloc.h>
+#include <game/server/entities/character.h>
 #include <game/server/save.h>
+#include <game/teamscore.h>
 
 #include "teeinfo.h"
 
@@ -120,7 +122,8 @@ public:
 		// 被警告AFK
 		bool m_IsWarnedAFK = false;
 	} m_Hidden;
-	// 状态重置
+
+	// hidden状态重置
 	void HiddenStateReset()
 	{
 		m_Hidden.m_InGame = false;
@@ -130,6 +133,11 @@ public:
 		m_Hidden.m_IsWin = false;
 		m_Hidden.m_IsLose = false;
 		// bool m_isFirstEnterGame = false;
+	}
+	// ddnet状态重置
+	void HiddenDDNetStateReset()
+	{
+		GetCharacter()->HiddenClearDisabledBuffs();
 	}
 
 	// used for snapping to just update latency if the scoreboard is active

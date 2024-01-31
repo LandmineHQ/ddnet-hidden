@@ -1567,7 +1567,8 @@ void CCharacter::HandleTiles(int Index)
 	if(TeleCheckpoint)
 		m_TeleCheckpoint = TeleCheckpoint;
 
-	GameServer()->m_pController->HandleCharacterTiles(this, Index);
+	CGameControllerDDRace *pController = (CGameControllerDDRace *)GameServer()->m_pController;
+	pController->HandleCharacterTiles(this, Index);
 
 	// freeze
 	if(((m_TileIndex == TILE_FREEZE) || (m_TileFIndex == TILE_FREEZE)) && !m_Core.m_Super && !m_Core.m_DeepFrozen)
@@ -1606,7 +1607,8 @@ void CCharacter::HandleTiles(int Index)
 	// hit others
 	if(((m_TileIndex == TILE_HIT_DISABLE) || (m_TileFIndex == TILE_HIT_DISABLE)) && (!m_Core.m_HammerHitDisabled || !m_Core.m_ShotgunHitDisabled || !m_Core.m_GrenadeHitDisabled || !m_Core.m_LaserHitDisabled))
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't hit others");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't hit others");
 		m_Core.m_HammerHitDisabled = true;
 		m_Core.m_ShotgunHitDisabled = true;
 		m_Core.m_GrenadeHitDisabled = true;
@@ -1614,7 +1616,8 @@ void CCharacter::HandleTiles(int Index)
 	}
 	else if(((m_TileIndex == TILE_HIT_ENABLE) || (m_TileFIndex == TILE_HIT_ENABLE)) && (m_Core.m_HammerHitDisabled || m_Core.m_ShotgunHitDisabled || m_Core.m_GrenadeHitDisabled || m_Core.m_LaserHitDisabled))
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can hit others");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can hit others");
 		m_Core.m_ShotgunHitDisabled = false;
 		m_Core.m_GrenadeHitDisabled = false;
 		m_Core.m_HammerHitDisabled = false;
@@ -1624,36 +1627,42 @@ void CCharacter::HandleTiles(int Index)
 	// collide with others
 	if(((m_TileIndex == TILE_NPC_DISABLE) || (m_TileFIndex == TILE_NPC_DISABLE)) && !m_Core.m_CollisionDisabled)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't collide with others");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't collide with others");
 		m_Core.m_CollisionDisabled = true;
 	}
 	else if(((m_TileIndex == TILE_NPC_ENABLE) || (m_TileFIndex == TILE_NPC_ENABLE)) && m_Core.m_CollisionDisabled)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can collide with others");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can collide with others");
 		m_Core.m_CollisionDisabled = false;
 	}
 
 	// hook others
 	if(((m_TileIndex == TILE_NPH_DISABLE) || (m_TileFIndex == TILE_NPH_DISABLE)) && !m_Core.m_HookHitDisabled)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't hook others");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't hook others");
 		m_Core.m_HookHitDisabled = true;
 	}
 	else if(((m_TileIndex == TILE_NPH_ENABLE) || (m_TileFIndex == TILE_NPH_ENABLE)) && m_Core.m_HookHitDisabled)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can hook others");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can hook others");
 		m_Core.m_HookHitDisabled = false;
 	}
 
 	// unlimited air jumps
 	if(((m_TileIndex == TILE_UNLIMITED_JUMPS_ENABLE) || (m_TileFIndex == TILE_UNLIMITED_JUMPS_ENABLE)) && !m_Core.m_EndlessJump)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You have unlimited air jumps");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You have unlimited air jumps");
 		m_Core.m_EndlessJump = true;
 	}
 	else if(((m_TileIndex == TILE_UNLIMITED_JUMPS_DISABLE) || (m_TileFIndex == TILE_UNLIMITED_JUMPS_DISABLE)) && m_Core.m_EndlessJump)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You don't have unlimited air jumps");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You don't have unlimited air jumps");
 		m_Core.m_EndlessJump = false;
 	}
 
@@ -1671,12 +1680,14 @@ void CCharacter::HandleTiles(int Index)
 	// jetpack gun
 	if(((m_TileIndex == TILE_JETPACK_ENABLE) || (m_TileFIndex == TILE_JETPACK_ENABLE)) && !m_Core.m_Jetpack)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You have a jetpack gun");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You have a jetpack gun");
 		m_Core.m_Jetpack = true;
 	}
 	else if(((m_TileIndex == TILE_JETPACK_DISABLE) || (m_TileFIndex == TILE_JETPACK_DISABLE)) && m_Core.m_Jetpack)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You lost your jetpack gun");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You lost your jetpack gun");
 		m_Core.m_Jetpack = false;
 	}
 
@@ -1697,39 +1708,45 @@ void CCharacter::HandleTiles(int Index)
 	{
 		m_Core.m_HasTelegunGun = true;
 
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport gun enabled");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport gun enabled");
 	}
 	else if(((m_TileIndex == TILE_TELE_GUN_DISABLE) || (m_TileFIndex == TILE_TELE_GUN_DISABLE)) && m_Core.m_HasTelegunGun)
 	{
 		m_Core.m_HasTelegunGun = false;
 
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport gun disabled");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport gun disabled");
 	}
 
 	if(((m_TileIndex == TILE_TELE_GRENADE_ENABLE) || (m_TileFIndex == TILE_TELE_GRENADE_ENABLE)) && !m_Core.m_HasTelegunGrenade)
 	{
 		m_Core.m_HasTelegunGrenade = true;
 
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport grenade enabled");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport grenade enabled");
 	}
 	else if(((m_TileIndex == TILE_TELE_GRENADE_DISABLE) || (m_TileFIndex == TILE_TELE_GRENADE_DISABLE)) && m_Core.m_HasTelegunGrenade)
 	{
 		m_Core.m_HasTelegunGrenade = false;
 
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport grenade disabled");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport grenade disabled");
 	}
 
 	if(((m_TileIndex == TILE_TELE_LASER_ENABLE) || (m_TileFIndex == TILE_TELE_LASER_ENABLE)) && !m_Core.m_HasTelegunLaser)
 	{
 		m_Core.m_HasTelegunLaser = true;
 
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport laser enabled");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport laser enabled");
 	}
 	else if(((m_TileIndex == TILE_TELE_LASER_DISABLE) || (m_TileFIndex == TILE_TELE_LASER_DISABLE)) && m_Core.m_HasTelegunLaser)
 	{
 		m_Core.m_HasTelegunLaser = false;
 
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport laser disabled");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "Teleport laser disabled");
 	}
 
 	// stopper
@@ -1802,42 +1819,50 @@ void CCharacter::HandleTiles(int Index)
 	}
 	else if(Collision()->GetSwitchType(MapIndex) == TILE_HIT_ENABLE && m_Core.m_HammerHitDisabled && Collision()->GetSwitchDelay(MapIndex) == WEAPON_HAMMER)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can hammer hit others");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can hammer hit others");
 		m_Core.m_HammerHitDisabled = false;
 	}
 	else if(Collision()->GetSwitchType(MapIndex) == TILE_HIT_DISABLE && !(m_Core.m_HammerHitDisabled) && Collision()->GetSwitchDelay(MapIndex) == WEAPON_HAMMER)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't hammer hit others");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't hammer hit others");
 		m_Core.m_HammerHitDisabled = true;
 	}
 	else if(Collision()->GetSwitchType(MapIndex) == TILE_HIT_ENABLE && m_Core.m_ShotgunHitDisabled && Collision()->GetSwitchDelay(MapIndex) == WEAPON_SHOTGUN)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can shoot others with shotgun");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can shoot others with shotgun");
 		m_Core.m_ShotgunHitDisabled = false;
 	}
 	else if(Collision()->GetSwitchType(MapIndex) == TILE_HIT_DISABLE && !(m_Core.m_ShotgunHitDisabled) && Collision()->GetSwitchDelay(MapIndex) == WEAPON_SHOTGUN)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't shoot others with shotgun");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't shoot others with shotgun");
 		m_Core.m_ShotgunHitDisabled = true;
 	}
 	else if(Collision()->GetSwitchType(MapIndex) == TILE_HIT_ENABLE && m_Core.m_GrenadeHitDisabled && Collision()->GetSwitchDelay(MapIndex) == WEAPON_GRENADE)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can shoot others with grenade");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can shoot others with grenade");
 		m_Core.m_GrenadeHitDisabled = false;
 	}
 	else if(Collision()->GetSwitchType(MapIndex) == TILE_HIT_DISABLE && !(m_Core.m_GrenadeHitDisabled) && Collision()->GetSwitchDelay(MapIndex) == WEAPON_GRENADE)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't shoot others with grenade");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't shoot others with grenade");
 		m_Core.m_GrenadeHitDisabled = true;
 	}
 	else if(Collision()->GetSwitchType(MapIndex) == TILE_HIT_ENABLE && m_Core.m_LaserHitDisabled && Collision()->GetSwitchDelay(MapIndex) == WEAPON_LASER)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can shoot others with laser");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can shoot others with laser");
 		m_Core.m_LaserHitDisabled = false;
 	}
 	else if(Collision()->GetSwitchType(MapIndex) == TILE_HIT_DISABLE && !(m_Core.m_LaserHitDisabled) && Collision()->GetSwitchDelay(MapIndex) == WEAPON_LASER)
 	{
-		GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't shoot others with laser");
+		if(!pController->m_HiddenModeCanTurnOn)
+			GameServer()->SendChatTarget(GetPlayer()->GetCID(), "You can't shoot others with laser");
 		m_Core.m_LaserHitDisabled = true;
 	}
 	else if(Collision()->GetSwitchType(MapIndex) == TILE_JUMP)
@@ -1857,7 +1882,8 @@ void CCharacter::HandleTiles(int Index)
 				str_format(aBuf, sizeof(aBuf), "You can jump %d time", NewJumps);
 			else
 				str_format(aBuf, sizeof(aBuf), "You can jump %d times", NewJumps);
-			GameServer()->SendChatTarget(GetPlayer()->GetCID(), aBuf);
+			if(!pController->m_HiddenModeCanTurnOn)
+				GameServer()->SendChatTarget(GetPlayer()->GetCID(), aBuf);
 			m_Core.m_Jumps = NewJumps;
 		}
 	}
@@ -2334,6 +2360,11 @@ void CCharacter::ResetPickups()
 		if(m_Core.m_ActiveWeapon == i)
 			m_Core.m_ActiveWeapon = WEAPON_GUN;
 	}
+	// hidden mode
+	// 重置武器
+	CGameControllerDDRace *pController = (CGameControllerDDRace *)GameServer()->m_pController;
+	if(pController->m_HiddenModeCanTurnOn)
+		m_Core.m_ActiveWeapon = WEAPON_HAMMER;
 }
 
 void CCharacter::SetEndlessHook(bool Enable)
