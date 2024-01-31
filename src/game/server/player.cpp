@@ -333,6 +333,9 @@ void CPlayer::Snap(int SnappingClient)
 	char aName[256];
 	char aSkin[256];
 	char aClan[256];
+	str_copy(aName, Server()->ClientName(m_ClientID));
+	str_copy(aSkin, m_TeeInfos.m_aSkinName);
+	str_copy(aClan, Server()->ClientClan(m_ClientID));
 
 	if(hiddenState == true && isInGame && isPassedS1)
 	{ // hidden mode开启	已经通过S1
@@ -342,6 +345,7 @@ void CPlayer::Snap(int SnappingClient)
 			if(isSeeker && pPlayerSnapTo->GetTeam() == TEAM_SPECTATORS)
 			{ // 旁观者显示谁是猎人
 				str_format(aName, sizeof(aName), ">>>%s<<<", GameServer()->Config()->m_HiddenSpectatorSeekerName);
+				str_copy(aClan, Server()->ClientName(m_ClientID));
 			}
 			else
 			{ // 正常显示
@@ -393,25 +397,13 @@ void CPlayer::Snap(int SnappingClient)
 			str_copy(aSkin, "Robot");
 		}
 	}
-	else
-	{ // 其他状况
-		if(isNotMachine)
-		{ // 不是假人
-			// 名字
-			str_copy(aName, Server()->ClientName(m_ClientID));
-			// 皮肤
-			str_copy(aSkin, m_TeeInfos.m_aSkinName);
-		}
-		else
-		{ // 假人
-			// 名字
-			str_copy(aName, "GIFT");
-			// 皮肤
-			str_copy(aSkin, "giftee_red");
-		}
+	else if(!isNotMachine)
+	{ // 假人
+		// 名字
+		str_copy(aName, "GIFT");
+		// 皮肤
+		str_copy(aSkin, "giftee_red");
 	}
-
-	str_copy(aClan, Server()->ClientClan(m_ClientID));
 
 	StrToInts(&pClientInfo->m_Name0, 4, aName); // 名字
 	StrToInts(&pClientInfo->m_Skin0, 6, aSkin); // 皮肤
