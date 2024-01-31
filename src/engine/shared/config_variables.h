@@ -683,7 +683,7 @@ MACRO_CONFIG_INT(ClVideoRecorderFPS, cl_video_recorder_fps, 60, 1, 1000, CFGFLAG
  * Add config variables for mods below this comment to avoid merge conflicts.
  */
 // Hidden相关变量
-MACRO_CONFIG_STR(HiddenSkins, hidden_skins, 16384, "[\"default\",\"cow\",\"dragon\"]", CFGFLAG_SERVER, "皮肤库，必须大于64")
+MACRO_CONFIG_STR(HiddenSkins, hidden_skins, 65536, "[\"default\",\"cow\",\"dragon\"]", CFGFLAG_SERVER, "皮肤库，必须大于64")
 
 MACRO_CONFIG_STR(HiddenTimeLeftStartPrefix, hidden_time_left_start_msg_prefix, 256, "游戏将在", CFGFLAG_SERVER | CFGFLAG_GAME, "自动开始的剩余时间消息字首")
 MACRO_CONFIG_STR(HiddenTimeLeftStartSuffix, hidden_time_left_start_msg_suffix, 256, "秒后开始", CFGFLAG_SERVER | CFGFLAG_GAME, "自动开始的剩余时间消息字尾")
