@@ -198,7 +198,7 @@ void CGameControllerDDRace::Tick()
 		m_pLoadBestTimeResult = nullptr;
 	} // 以上是原本的代码
 
-	if(HiddenModeCanTurnOn())
+	if(m_HiddenModeCanTurnOn)
 	{
 		if(m_Hidden.stepEndTick != -1)
 		{ // Hidden Mode相关Tick处理
@@ -517,6 +517,7 @@ void CGameControllerDDRace::HiddenTick(int nowTick, int endTick, int tickSpeed, 
 			bool isBeenKilled = pPlayer->m_Hidden.m_HasBeenKilled;
 			bool isInSpectator = pPlayer->GetTeam() == TEAM_SPECTATORS;
 			bool isLose = pPlayer->m_Hidden.m_IsLose;
+			bool isAFK = pPlayer->IsAfk();
 
 			if(isInGame && isBeenKilled && !isInSpectator && !isLose)
 			{ // 玩家被猎人锤中
@@ -555,7 +556,9 @@ void CGameControllerDDRace::HiddenTick(int nowTick, int endTick, int tickSpeed, 
 				str_format(aBuf, sizeof(aBuf), "%s:%s", Server()->ClientName(pPlayer->GetCID()), Config()->m_HiddenStepPlayerWaitingMSG);
 				GameServer()->SendChatTarget(pPlayer->GetCID(), aBuf);
 			}
-			else if(!isInSpectator && isLose)
+			else if(
+				(!isInSpectator && isLose) ||
+				isAFK)
 			{ // 其余奇葩情况
 				// 移动到旁观列表
 				pPlayer->SetTeam(TEAM_SPECTATORS, false);
