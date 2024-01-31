@@ -2275,6 +2275,7 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientID, con
 
 void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int ClientID)
 {
+	CGameControllerDDRace *pController = (CGameControllerDDRace *)m_pController;
 	if(RateLimitPlayerVote(ClientID) || m_VoteCloseTime)
 		return;
 
@@ -2473,6 +2474,14 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 
 		int SpectateID = str_toint(pMsg->m_pValue);
 
+		// hidden mode
+		// 不允许将设备投票进入旁观
+		if(pController->m_HiddenModeCanTurnOn && pController->HiddenIsMachine(m_apPlayers[SpectateID]))
+		{
+			SendChatTarget(ClientID, "Invalid client id to move");
+			return;
+		}
+		
 		if(SpectateID < 0 || SpectateID >= MAX_CLIENTS || !m_apPlayers[SpectateID] || m_apPlayers[SpectateID]->GetTeam() == TEAM_SPECTATORS)
 		{
 			SendChatTarget(ClientID, "Invalid client id to move");
