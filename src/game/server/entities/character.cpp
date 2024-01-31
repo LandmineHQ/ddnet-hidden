@@ -482,14 +482,33 @@ void CCharacter::FireWeapon()
 					// 计算的是距离S4开始是否大于某个时间段
 					// 以此来避免玩家在即将进入S4之前开火导致玩家被淘汰
 					bool isLoading = pController->m_Hidden.stepStartTick <= Server()->Tick() - Server()->TickSpeed() * 3;
+
 					if(isHiddenMode && isLoading)
-					{ // 进入了S4房间
-					  // 受害者状态改变->被杀(淘汰、出局)
-						pTarget->GetPlayer()->m_Hidden.m_HasBeenKilled = true;
-						// 受害者旁观ID设置为杀手ID
-						pTarget->GetPlayer()->m_SpectatorID = this->GetPlayer()->GetCID();
-						// 添加到最后一次行动
-						pController->m_Hidden.lastActiveClientID = this->GetPlayer()->GetCID();
+					{ // 进入了S4房间，已开始游戏
+						// 刚解冻吗
+						bool isJustUnfreeze = pTarget->m_Core.m_FreezeStart + Server()->TickSpeed() * 10 > Server()->Tick();
+						int freezeDuration = 0;
+						int scoreDelta = 0;
+						if(isJustUnfreeze) // 刚解冻处于无敌状态
+						{
+							sendKillMsg = false;
+							freezeDuration = 5;
+							scoreDelta = -100;
+						}
+						else // 已超过无敌时间
+						{
+							// 受害者状态改变->被杀(淘汰、出局)
+							pTarget->GetPlayer()->m_Hidden.m_HasBeenKilled = true;
+							// 受害者旁观ID设置为杀手ID
+							pTarget->GetPlayer()->m_SpectatorID = this->GetPlayer()->GetCID();
+							// 添加到最后一次行动
+							pController->m_Hidden.lastActiveClientID = this->GetPlayer()->GetCID();
+
+							sendKillMsg = true;
+							freezeDuration = 2;
+							scoreDelta = 1;
+						}
+
 						// 声音
 						// 如果是猎人则发出惨叫，否则正常声音
 						if(pTarget->GetPlayer()->m_Hidden.m_IsSeeker)
@@ -501,12 +520,12 @@ void CCharacter::FireWeapon()
 							GameServer()->CreateSound(pTarget->m_Pos, SOUND_CTF_DROP, TeamMask());
 						}
 						// 分数
-						this->GetPlayer()->m_Score = this->GetPlayer()->m_Score.value() + 1;
+						this->GetPlayer()->m_Score = this->GetPlayer()->m_Score.value() + scoreDelta;
 						// 施暴者冻结
-						this->Freeze(1);
-
+						this->Freeze(freezeDuration);
+						// 受害者冻结
+						pTarget->Freeze(1);
 						Msg.m_Killer = pTarget->GetPlayer()->GetCID();
-						sendKillMsg = true;
 					}
 					else if(pController->m_Hidden.nowStep == STEP_S0)
 					{ // 未开始
@@ -2267,7 +2286,8 @@ bool CCharacter::UnFreeze()
 		if(!m_Core.m_aWeapons[m_Core.m_ActiveWeapon].m_Got)
 			m_Core.m_ActiveWeapon = WEAPON_GUN;
 		m_FreezeTime = 0;
-		m_Core.m_FreezeStart = 0;
+		// hidden mode 在解冻后判断角色无敌，由于可以复用该变量实现，所以不可重置m_FreezeStart
+		// m_Core.m_FreezeStart = 0;
 		m_FrozenLastTick = true;
 		return true;
 	}
