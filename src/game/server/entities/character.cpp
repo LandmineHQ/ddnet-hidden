@@ -2360,11 +2360,6 @@ void CCharacter::ResetPickups()
 		if(m_Core.m_ActiveWeapon == i)
 			m_Core.m_ActiveWeapon = WEAPON_GUN;
 	}
-	// hidden mode
-	// 重置武器
-	CGameControllerDDRace *pController = (CGameControllerDDRace *)GameServer()->m_pController;
-	if(pController->m_HiddenModeCanTurnOn)
-		m_Core.m_ActiveWeapon = WEAPON_HAMMER;
 }
 
 void CCharacter::SetEndlessHook(bool Enable)
