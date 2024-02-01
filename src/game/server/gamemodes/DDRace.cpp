@@ -560,10 +560,11 @@ void CGameControllerDDRace::HiddenTick(int nowTick, int endTick, int tickSpeed, 
 			}
 			else if(
 				(!isInSpectator && isLose) ||
-				isAFK)
+				(!isInSpectator && isAFK))
 			{ // 其余奇葩情况
 				// 移动到旁观列表
 				pPlayer->SetTeam(TEAM_SPECTATORS, false);
+				pPlayer->m_SpectatorID = m_Hidden.lastActiveClientID;
 			}
 		}
 
