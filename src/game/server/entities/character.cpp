@@ -520,7 +520,9 @@ void CCharacter::FireWeapon()
 							GameServer()->CreateSound(pTarget->m_Pos, SOUND_CTF_DROP, TeamMask());
 						}
 						// 分数
-						this->GetPlayer()->m_Score = this->GetPlayer()->m_Score.value() + scoreDelta;
+						if(this->GetPlayer()->m_Score.has_value())
+							this->GetPlayer()->m_Score = this->GetPlayer()->m_Score.value() + scoreDelta;
+
 						// 施暴者冻结
 						this->Freeze(freezeDuration);
 						// 受害者冻结
