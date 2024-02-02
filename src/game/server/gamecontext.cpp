@@ -2481,7 +2481,7 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 			SendChatTarget(ClientID, "Invalid client id to move");
 			return;
 		}
-		
+
 		if(SpectateID < 0 || SpectateID >= MAX_CLIENTS || !m_apPlayers[SpectateID] || m_apPlayers[SpectateID]->GetTeam() == TEAM_SPECTATORS)
 		{
 			SendChatTarget(ClientID, "Invalid client id to move");
@@ -3581,10 +3581,7 @@ void CGameContext::ConHiddenTest2(IConsole::IResult *pResult, void *pUserData)
 }
 void CGameContext::ConHiddenCrash(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
-	CGameControllerDDRace *pController = (CGameControllerDDRace *)(pSelf->m_pController);
-	
-	pSelf->m_apPlayers[999]->GetCharacter()->Destroy();
+	abort();
 }
 
 // Hidden Mode 切换
