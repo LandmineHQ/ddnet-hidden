@@ -3649,6 +3649,8 @@ void CGameContext::ConHiddenSpawnDummies(IConsole::IResult *pResult, void *pUser
 		pSelf->OnClientConnected(id, nullptr);
 
 		pPlayer = pSelf->m_apPlayers[id];
+		if(!pPlayer)
+			continue;
 		str_copy(pPlayer->m_TeeInfos.m_aSkinName, pSelf->Config()->m_HiddenMachineSkinName);
 		pPlayer->m_TeeInfos.m_UseCustomColor = 0;
 		pPlayer->SetAfk(false);
