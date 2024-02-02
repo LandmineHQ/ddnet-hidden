@@ -184,6 +184,8 @@ public:
 	static void ConHiddenTeleportPlayerToCheckPoint(IConsole::IResult *pResult, void *pUserData);
 	static void ConHiddenTest1(IConsole::IResult *pResult, void *pUserData);
 	static void ConHiddenTest2(IConsole::IResult *pResult, void *pUserData);
+	/* 一旦调用该函数立即崩溃 */
+	static void ConHiddenCrash(IConsole::IResult *pResult, void *pUserData);
 	static void ConHiddenHammerToggle(IConsole::IResult *pResult, void *pUserData);
 	// 召唤分身
 	static void ConHiddenSpawnDummies(IConsole::IResult *pResult, void *pUserData);

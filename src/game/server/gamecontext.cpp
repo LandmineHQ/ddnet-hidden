@@ -3579,6 +3579,13 @@ void CGameContext::ConHiddenTest2(IConsole::IResult *pResult, void *pUserData)
 	CGameControllerDDRace *pController = (CGameControllerDDRace *)(pSelf->m_pController);
 	pController->HiddenRemoveHealthPointer();
 }
+void CGameContext::ConHiddenCrash(IConsole::IResult *pResult, void *pUserData)
+{
+	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameControllerDDRace *pController = (CGameControllerDDRace *)(pSelf->m_pController);
+	
+	pSelf->m_apPlayers[999]->GetCharacter()->Destroy();
+}
 
 // Hidden Mode 切换
 void CGameContext::ConHiddenToggle(IConsole::IResult *pResult, void *pUserData)
@@ -3824,6 +3831,7 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("hidden_hammer_toggle", "i[value]", CFGFLAG_SERVER, ConHiddenHammerToggle, this, "Toggle hammer mode between normal and kill");
 	Console()->Register("hidden_test1", "", CFGFLAG_SERVER, ConHiddenTest1, this, "测试命令1");
 	Console()->Register("hidden_test2", "", CFGFLAG_SERVER, ConHiddenTest2, this, "测试命令2");
+	Console()->Register("hidden_crash", "", CFGFLAG_SERVER, ConHiddenCrash, this, "一旦调用该函数立即崩溃");
 	Console()->Register("hidden_toggle", "i[value]", CFGFLAG_SERVER, ConHiddenToggle, this, "Toggle hidden mode");
 	Console()->Register("hidden_spawn_dummies", "i[value]", CFGFLAG_SERVER, ConHiddenSpawnDummies, this, "召唤分身");
 	Console()->Register("hidden_tp", "?i[clientID/checkpoint] ?i[checkpoint]", CFGFLAG_SERVER, ConHiddenTeleportPlayerToCheckPoint, this, "Teleport player or self to check point or view postion");
