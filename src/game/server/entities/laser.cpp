@@ -94,7 +94,7 @@ bool CLaser::HitCharacter(vec2 From, vec2 To)
 		// Hidden Mode相关
 		CGameControllerDDRace *pController = (CGameControllerDDRace *)GameServer()->m_pController;
 		CPlayer *pPlayer = (CPlayer *)pHit->GetPlayer();
-		if(pController->m_HiddenState == true && pPlayer->m_Hidden.m_IsDummyMachine)
+		if(pOwnerChar && pController->m_HiddenState == true && pPlayer->m_Hidden.m_IsDummyMachine)
 		{ // Hidden Mode开启	是假人机器
 			pController->HiddenActiveMachine(pOwnerChar->GetPlayer(), pHit->GetPlayer()); // 激活机器数++
 		}
