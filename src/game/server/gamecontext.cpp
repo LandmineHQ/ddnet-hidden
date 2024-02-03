@@ -1184,7 +1184,8 @@ void CGameContext::OnTick()
 						No++;
 
 					// veto right for players who have been active on server for long and who're not afk
-					if(!IsKickVote() && !IsSpecVote() && g_Config.m_SvVoteVetoTime)
+					// hidden mode 中不允许有一票否决权,即非躲猫猫模式时才可开启一票否决权
+					if(!IsKickVote() && !IsSpecVote() && g_Config.m_SvVoteVetoTime && pController->m_HiddenModeCanTurnOn == false)
 					{
 						// look through all players with same IP again, including the current player
 						for(int j = i; j < MAX_CLIENTS; j++)
