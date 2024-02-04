@@ -550,6 +550,7 @@ void CGameControllerDDRace::HiddenTick(int nowTick, int endTick, int tickSpeed, 
 			{ // 新入服务器玩家
 				// 移动到旁观列表
 				pPlayer->SetTeam(TEAM_SPECTATORS, false);
+				pPlayer->m_SpectatorID = m_Hidden.lastActiveClientID;
 
 				// 个人广播	下一轮加入
 				str_format(aBuf, sizeof(aBuf), "%s %s", Server()->ClientName(pPlayer->GetCID()), Config()->m_HiddenStepPlayerWaitingMSG);
