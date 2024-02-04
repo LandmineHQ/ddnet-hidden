@@ -39,7 +39,9 @@ void CPickup::Tick()
 	// HIDDEN_POWERUP_HEALTH
 	if(m_Type == POWERUP_HEALTH && m_Subtype == HIDDEN_POWERUP_HEALTH)
 	{
+		// 拥有该pickup的玩家
 		CPlayer *pPlayer = GameServer()->m_apPlayers[this->m_HiddenBindPlayerClient];
+		// 该pickup指向的目标玩家/机器
 		CPlayer *pTarget = GameServer()->m_apPlayers[0];
 		if(!pPlayer || !pPlayer->GetCharacter() || !pTarget || !pTarget->GetCharacter())
 			return;
@@ -47,6 +49,7 @@ void CPickup::Tick()
 		float min = INFINITY;
 		if(!pPlayer->m_Hidden.m_IsSeeker)
 		{
+			// 逃生者的指南针指向机器
 			for(int i = 0; i < pController->m_Hidden.deviceNum; i++)
 			{
 				auto *pTemp = GameServer()->m_apPlayers[i];
@@ -62,13 +65,17 @@ void CPickup::Tick()
 		}
 		else
 		{
+			// 猎手的指南针指向逃生者
 			for(int i = pController->m_Hidden.deviceNum; i < MAX_CLIENTS; i++)
 			{
 				auto *pTemp = GameServer()->m_apPlayers[i];
 				if(!pTemp || !pTemp->GetCharacter())
-					continue;
+					continue; // 不能是空指针
 				if(pTemp->GetCID() == this->m_HiddenBindPlayerClient)
-					continue;
+					continue; // 不能指向自己
+				if(pTemp->m_Hidden.m_IsSeeker)
+					continue; // 不能指向猎手
+
 				float dis = distance(vPos, pTemp->GetCharacter()->m_Pos);
 				if(dis < min)
 				{
