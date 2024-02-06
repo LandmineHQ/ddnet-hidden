@@ -267,6 +267,7 @@ public:
 		ResetHook();
 		ResetInput();
 		ResetPickups();
+		RemoveNinja();
 		ResetVelocity();
 		SetDeepFrozen(false);
 		SetLiveFrozen(false);
