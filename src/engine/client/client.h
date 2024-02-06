@@ -157,7 +157,6 @@ class CClient : public IClient, public CDemoPlayer::IListener
 	SHA256_DIGEST m_MapDetailsSha256 = SHA256_ZEROED;
 	char m_aMapDetailsUrl[256] = "";
 
-	char m_aDDNetInfoTmp[64];
 	std::shared_ptr<CHttpRequest> m_pDDNetInfoTask = nullptr;
 
 	// time
@@ -353,8 +352,7 @@ public:
 	void FinishMapDownload();
 
 	void RequestDDNetInfo() override;
-	void ResetDDNetInfo();
-	bool IsDDNetInfoChanged();
+	void ResetDDNetInfoTask();
 	void FinishDDNetInfo();
 	void LoadDDNetInfo();
 
@@ -499,7 +497,6 @@ public:
 	SWarning *GetCurWarning() override;
 
 	CChecksumData *ChecksumData() override { return &m_Checksum.m_Data; }
-	bool InfoTaskRunning() override { return m_pDDNetInfoTask != nullptr; }
 	int UdpConnectivity(int NetType) override;
 
 #if defined(CONF_FAMILY_WINDOWS)
