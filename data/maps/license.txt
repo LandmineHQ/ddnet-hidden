@@ -9,3 +9,7 @@ CC-BY-SA license
 Crossroads:
 Copyright Spiritd0te
 CC-BY-SA license
+
+Space Extinction Extra:
+Copyright Wartoz & 1.46upiq
+CC-BY-SA license
