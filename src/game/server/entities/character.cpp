@@ -2319,7 +2319,9 @@ bool CCharacter::UnFreeze()
 			m_Core.m_ActiveWeapon = WEAPON_GUN;
 		m_FreezeTime = 0;
 		// hidden mode 在解冻后判断角色无敌，由于可以复用该变量实现，所以不可重置m_FreezeStart
-		// m_Core.m_FreezeStart = 0;
+		CGameControllerDDRace *pController = (CGameControllerDDRace *)GameServer()->m_pController;
+		if(pController->m_HiddenModeCanTurnOn == false)
+			m_Core.m_FreezeStart = 0;
 		m_FrozenLastTick = true;
 		return true;
 	}
