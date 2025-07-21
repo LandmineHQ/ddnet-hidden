@@ -1,3 +1,9 @@
+# 警告：此项目已无法再正常运行，已放弃维护，请不要再使用！！！
+
+在ddnet客户端19版本的某个小版本修复了本模组依赖的客户端BUG，导致本模组呈现效果失效，如果您还需要体会一下本模组，请使用18版本以下的ddnet体验。
+
+In a certain minor version of the ddnet client version 19, a bug that this mod depends on was fixed, causing the effects of this mod to become invalid. If you still wish to experience this mod, please use a ddnet version below 18.
+
 # DDNet HiddenWorld [![](https://github.com/ddnet/ddnet/workflows/Build/badge.svg)](https://github.com/ddnet/ddnet/actions?query=workflow%3ABuild+event%3Apush+branch%3Amaster)
 
 My flavor of HiddenWorld, a DDNet mod.
